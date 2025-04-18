@@ -396,7 +396,8 @@
             fetch('http://89.111.152.243:6080/startAnalys', { 
                 method: 'POST',
                 headers: {
-                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
+                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
+                    'filename': file.name
                 },
                 body: formData
             })
