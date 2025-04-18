@@ -4,3 +4,8 @@ WORKDIR backend
 
 COPY . .
 COPY ../AI ./AI
+
+RUN pip install -r requirements.txt
+
+EXPOSE 6080
+CMD ["python", "app.py"]

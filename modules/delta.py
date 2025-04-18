@@ -13,11 +13,11 @@ def get_deltas(parse_list: [Event]) -> [Event]:
         new_list.append(Event(
             time = event.time,
             incident = event.incident,
-            node_memory_MemFree_bytes = abs(event.node_memory_MemFree_bytes - previous.node_memory_MemFree_bytes),
-            node_cpu_seconds_total = abs(event.node_cpu_seconds_total - previous.node_cpu_seconds_total),
-            node_disk_read_bytes_total = abs(event.node_disk_read_bytes_total - previous.node_disk_read_bytes_total),
-            node_network_receive_errs_total = abs(event.node_network_receive_errs_total - previous.node_network_receive_errs_total),
-            node_processes_pids = abs(event.node_processes_pids - previous.node_processes_pids)
+            node_memory_MemFree_bytes = f"{(event.node_memory_MemFree_bytes - previous.node_memory_MemFree_bytes)/previous.node_memory_MemFree_bytes:.3f}",
+            node_cpu_seconds_total = f"{(event.node_cpu_seconds_total - previous.node_cpu_seconds_total)/previous.node_cpu_seconds_total:.3f}",
+            node_disk_read_bytes_total = f"{(event.node_disk_read_bytes_total - previous.node_disk_read_bytes_total)/previous.node_disk_read_bytes_total:.3f}",
+            node_network_receive_errs_total = f"{(event.node_network_receive_errs_total - previous.node_network_receive_errs_total)/previous.node_network_receive_errs_total:.3f}",
+            node_processes_pids = f"{(event.node_processes_pids - previous.node_processes_pids)/previous.node_processes_pids:.3f}"
         ))
 
     return new_list
