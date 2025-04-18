@@ -10,14 +10,14 @@ CORS(app)
 
 load_dotenv()
 
-AUTH_PASSWD = getenv("AUTH_PASSWD")
+AUTH_PASS = getenv("AUTH_PASS")
 
 # start analys from AI
 @app.route("/startAnalys", methods=["POST"])
 @cross_origin()
 def startAnalys():
     try:
-        if request.headers["X-auth"] != AUTH_PASSWD:
+        if request.headers["X-auth"] != AUTH_PASS:
             abort(401)
     except:
         abort(401)
