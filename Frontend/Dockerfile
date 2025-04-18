@@ -1,7 +1,0 @@
-
-
-WORKDIR frontend
-
-COPY . .
-
-EXPOSE 8080

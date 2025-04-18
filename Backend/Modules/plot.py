@@ -2,14 +2,14 @@ import matplotlib.pyplot as plt
 import parser
 
 # Получаем список объектов Event
-events = parser.parseManually('/home/bogdan/Pro/hack/train.csv') 
+events = parser.parseManually('')
 a = 2
 
 # Заполняем списки
 events = events[500*a-500:500*a]
 
 x = [event.time for event in events]
-y = [event.node_memory_Bounce_bytes for event in events]
+y = [event.node_memory_MemFree_bytes for event in events]
 k = [bool(event.incident) for event in events]
 
 plt.plot(x, y, marker='o', label='Данные')

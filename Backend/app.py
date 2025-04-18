@@ -1,24 +1,47 @@
 # some imports
-from flask import Flask, request, abort, Response
+from flask import Flask, request, abort, make_response
 from flask_cors import CORS, cross_origin
+from Modules.parser import parse, parse_csv_arr, return_csv_response
+from os import getenv
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
+
+load_dotenv()
+
+AUTH_PASSWD = getenv("AUTH_PASSWD")
 
 # start analys from AI
 @app.route("/startAnalys", methods=["POST"])
 @cross_origin()
 def startAnalys():
     try:
-        if request.headers["X-auth"] != "bogdan_krasnov_luchshe_vseh_kak_parol":
+        if request.headers["X-auth"] != AUTH_PASSWD:
             abort(401)
     except:
         abort(401)
 
-    with open("templates/test_checks_example.csv", mode='r') as f:
-        file = f.read()
+    with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
+        f.write(request.data.decode())
 
-    return "hello"
+    return parser(request.headers)
+
+# Get csv file without incidents, with Neuro create incidents and return csv's response with incidents
+def parser(headers):
+    """Get csv file without incidents, with Neuro create incidents and return csv's response with incidents"""
+    csv_arr = parse(f"Uploads/{headers["filename"]}")
+
+    csv_arr_with_incidents = func_from_ai(csv_arr)
+
+    done_csv = parse_csv_arr(csv_arr_with_incidents)
+
+    response = return_csv_response(done_csv)
+
+    return response
+
+def func_from_ai(data):
+    pass
 
 # start listening
 def main():

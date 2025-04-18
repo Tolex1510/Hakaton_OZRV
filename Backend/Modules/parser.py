@@ -2,6 +2,9 @@ import pandas as pd
 from event import Event
 from datetime import datetime
 from typing import List
+from flask import make_response
+import csv
+from io import StringIO
 
 ATTRIBUTES = ["time", "incident", "node_memory_MemFree_bytes", "node_cpu_seconds_total",
               "node_disk_read_bytes_total", "node_network_receive_errs_total", "node_processes_pids"]
@@ -53,3 +56,18 @@ def delta_parse(parse_list):
         memory_dif = parse_list[i + 1][1] - parse_list[i + 1][1]
         result.append([parse_list[i][0], memory_dif])
     return result
+
+def parse_csv_arr(arr):
+    data = StringIO()
+
+    csv.writer(data).writerows(arr)
+
+    return data.getvalue()
+
+def return_csv_response(body):
+    si = StringIO()
+    cw = csv.writer(si)
+    cw.writerows(body)
+
+    response = make_response(si.getvalue())
+    return response
