@@ -396,9 +396,9 @@
                     'Content-Type': 'application/json',
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
                 }
-            }).then(response => console.log(response)).catch(error => console.log(error));
-            const reader = new FileReader();
-            reader.onload = (e) => {
+            }).then(e => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
                 const lines = e.target.result.split('\n');
                 allData = [];
                 
@@ -412,6 +412,7 @@
                 if (daysData.length) showDay(0);
             };
             reader.readAsText(file);
+            }).catch(error => console.log(error));
         }
 
         function groupDataByDay(data) {
