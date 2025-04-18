@@ -9,7 +9,7 @@ def startAnalys():
     if request.headers["X-auth"] != "bogdan_krasnov_luchshe_vseh_kak_parol":
         abort(404)
 
-    pass # here we start func from AI and return "test_checks_example.csv" to frontend
+    pass # here we start func from AI and return "test_checks_example.csv" to Frontend
 
 # start listening
 def main():
