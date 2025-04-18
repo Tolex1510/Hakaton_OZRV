@@ -1,10 +1,6 @@
 services:
   backend:
     build: ./Backend
-    expose:
-      - 6080
+    ports:
+      - 6080:6080
 
-  frontend:
-    build: ./Frontend
-    expose:
-      - 8080

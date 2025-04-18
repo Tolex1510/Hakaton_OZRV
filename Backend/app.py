@@ -1,19 +1,25 @@
 # some imports
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 
 app = Flask(__name__)
 
 # start analys from AI
-@app.route("startAnalys")
+@app.route("/startAnalys")
 def startAnalys():
-    if request.headers["X-auth"] != "bogdan_krasnov_luchshe_vseh_kak_parol":
-        abort(404)
+    try:
+        if request.headers["X-auth"] != "bogdan_krasnov_luchshe_vseh_kak_parol":
+            abort(401)
+    except:
+        abort(401)
 
-    pass # here we start func from AI and return "test_checks_example.csv" to Frontend
+    with open("templates/test_checks_example.csv", mode='r') as f:
+        file = f.read()
+
+    return Response(file, content_type="text/csv")
 
 # start listening
 def main():
-    app.run(host="0.0.0.0", port=6080)
+    app.run(host="0.0.0.0", port=6080, debug=True)
 
 if __name__ == "__main__":
     main()
