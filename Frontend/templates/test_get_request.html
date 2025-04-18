@@ -390,12 +390,15 @@
         }
 
         function processCSV(file) {
+            const formData = new FormData();
+            formData.append('file', file);
             fetch('http://89.111.152.243:6080/startAnalys', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
-                }
+                },
+                body: formData
             }).then(e => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -407,7 +410,7 @@
                     const [time, incident] = lines[i].split(',');
                     allData.push({ time, incident: parseInt(incident) });
                 }
-                
+                console.log(allData);
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
             };
