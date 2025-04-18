@@ -32,25 +32,24 @@ def parseManually(path: str) -> List[Event]:
 
 def parse(path):
     """
-    Parse csv file for second case and
+    Parse csv file for second case and return matrix with 'time' and 'node_memory_MemFree_bytes
     :param path: Path of csv file
     :return: List with Event objects of each row in csv file with attributes: 'time' and 'node_memory_MemFree_bytes'
     """
-    data = pd.read_csv(path)[[elem for elem in ATTRIBUTES if elem != "incident"]]
+    data = pd.read_csv(path)[["time", "node_memory_MemFree_bytes"]]
 
     result = []
 
     for row in data.values:
         # transfer string to datetime
-        time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
+        elem = [datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S"), row[1]]
+        result.append(elem)
 
-        attrs = dict()
-        for i, attr in enumerate([elem for elem in ATTRIBUTES if elem != "incident"]):
-            attrs[attr] = row[i]
+    return delta_parse(result)
 
-        attrs["time"] = time
-        result.append(Event(
-            **attrs
-        ))
-
+def delta_parse(parse_list):
+    result = []
+    for i in range(len(parse_list) - 1):
+        memory_dif = parse_list[i + 1][1] - parse_list[i + 1][1]
+        result.append([parse_list[i][0], memory_dif])
     return result

@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import parser
-import numpy as np
 
 # Получаем список объектов Event
 events = parser.parseManually('/home/bogdan/Pro/hack/train.csv') 

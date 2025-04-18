@@ -18,7 +18,7 @@ def startAnalys():
     with open("templates/test_checks_example.csv", mode='r') as f:
         file = f.read()
 
-    return Response(file, content_type="text/csv")
+    return "hello"
 
 # start listening
 def main():
