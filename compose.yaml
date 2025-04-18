@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./backend
+    build: ./Backend
+    ports:
+      - 6080:6080
 
-  frontend:
-    build: ./frontend
