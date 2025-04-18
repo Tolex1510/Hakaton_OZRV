@@ -372,7 +372,6 @@
         // Основные функции
         function handleFiles(files) {
             if (!files.length) return;
-            
             const file = files[0];
             if (!file.name.toLowerCase().endsWith('.csv')) {
                 alert('Пожалуйста, выберите CSV файл');
@@ -390,13 +389,17 @@
         }
 
         function processCSV(file) {
+            const formData = new FormData();
+            formData.append('file', file);
             fetch('http://89.111.152.243:6080/startAnalys', { 
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
-                }
+                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
+                    'Content-Type': 'multipart/form-data'
+                },
+                body: formData
             }).then(e => {
+                console.log(e);
                 const reader = new FileReader();
                 reader.onload = (e) => {
                 const lines = e.target.result.split('\n');
@@ -407,7 +410,6 @@
                     const [time, incident] = lines[i].split(',');
                     allData.push({ time, incident: parseInt(incident) });
                 }
-                
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
             };
