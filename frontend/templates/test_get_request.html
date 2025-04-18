@@ -390,6 +390,15 @@
         }
 
         function processCSV(file) {
+            fetch('http://89.111.152.243:6080/startAnalys', { 
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
+                }
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            });
             const reader = new FileReader();
             reader.onload = (e) => {
                 const lines = e.target.result.split('\n');
