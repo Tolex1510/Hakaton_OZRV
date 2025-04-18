@@ -391,11 +391,12 @@
 
         function processCSV(file) {
             fetch('http://89.111.152.243:6080/startAnalys', { 
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol'
-                }
+                },
+                body: JSON.stringify({ file_name: file.name })
             }).then(response => response.json()).then(data => {
                 console.log(data);
             });
