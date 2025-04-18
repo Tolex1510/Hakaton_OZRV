@@ -1,7 +1,9 @@
 # some imports
 from flask import Flask, request, abort, Response
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # start analys from AI
 @app.route("/startAnalys")
