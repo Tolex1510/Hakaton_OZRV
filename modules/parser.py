@@ -2,6 +2,11 @@ import pandas as pd
 from event import Event
 
 def parse(path):
+    """
+    Parse csv file and return list with Event's objects for each data with 'time', 'incident' and 'node_memory_MemFree_bytes'
+    :param path: Path of csv file for parsing
+    :return: list with Event's objects for each data
+    """
     data = pd.read_csv(path)[["time", "incident", "node_memory_MemFree_bytes"]]
 
     result = []
