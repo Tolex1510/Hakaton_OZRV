@@ -1,0 +1,5 @@
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - 6080:6080
