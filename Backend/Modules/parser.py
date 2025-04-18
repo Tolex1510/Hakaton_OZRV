@@ -1,5 +1,5 @@
 import pandas as pd
-from event import Event
+from Modules.event import Event
 from datetime import datetime
 from typing import List
 from flask import make_response
