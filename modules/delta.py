@@ -1,6 +1,7 @@
 from event import Event
+from typing import List
 
-def get_deltas(parse_list: [Event]) -> [Event]:
+def get_deltas(parse_list: List[Event]) -> List[Event]:
     """
     Parse list with objects of Event to get delta's of data from each event
     :param parse_list: List with objects of Event with data from csv file
