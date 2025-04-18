@@ -1,3 +1,4 @@
-Backend/.env
-compose.yaml
-Backend/Dockerfile
+./Backend/.env
+./compose.yaml
+./Backend/Dockerfile
+.venv
