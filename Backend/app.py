@@ -1,12 +1,13 @@
 # some imports
 from flask import Flask, request, abort, Response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 CORS(app)
 
 # start analys from AI
-@app.route("/startAnalys")
+@app.route("/startAnalys", methods=["POST"])
+@cross_origin()
 def startAnalys():
     try:
         if request.headers["X-auth"] != "bogdan_krasnov_luchshe_vseh_kak_parol":
