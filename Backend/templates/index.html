@@ -422,8 +422,8 @@
                     if (parts.length < 3) continue;
                     
                     // Извлекаем время и incident (игнорируя первый элемент - индекс)
-                    const time = parts[1].trim();
-                    const incident = parseInt(parts[2].trim());
+                    const time = parts[0].trim();
+                    const incident = parseInt(parts[1].trim());
                     
                     allData.push({ time, incident });
                 }
