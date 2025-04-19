@@ -12,7 +12,7 @@ def main(path):
     X_train, X_test = train_test_split(event_list, test_size=0.2, random_state=42)
     incidents = prediction(model, X_train, X_test, task=True)
 
-    result = [['', 'time', 'incidents']]
+    result = [['time', 'incidents']]
 
     for i, elem in enumerate(incidents):
         result.append([time_list[i].strftime("%Y-%m-%d %H:%M:%S"), elem])
