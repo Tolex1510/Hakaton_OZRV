@@ -407,22 +407,21 @@
                 return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
-                // Парсим CSV текст напрямую
-                const lines = csvText.split('\n');
-                const allData = [];
-        
+                console.log(csvText);
+                const reader = new FileReader();
+                reader.onload = (csvText) => {
+                const lines = csvText.target.result.split('\n');
+                console.log(lines);
+                allData = [];
+
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
-                    // Разбиваем строку по запятым, игнорируя индекс в начале
-                    const parts = lines[i].split(',');
-                    // Берем последние две части (время и incident)
-                    const time = parts[parts.length - 2];
-                    const incident = parts[parts.length - 1];
+                    const [time, incident] = lines[i].split(',');
                     allData.push({ time, incident: parseInt(incident) });
                 }
-                
+                }
                 console.log(allData);
-                const daysData = groupDataByDay(allData);
+                daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
             })
             .catch(error => {
