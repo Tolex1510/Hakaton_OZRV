@@ -296,7 +296,7 @@
     </div>
     
     <footer>
-        © Dreamweavers 2023
+        © Dreamweavers 2025
     </footer>
 
     <script>
@@ -407,20 +407,29 @@
                 return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
-                const lines = csvText.target.result.split('\n');
-                console.log(lines);
+                const lines = csvText.split('\n');
                 allData = [];
-
+        
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
-                    const [time, incident] = lines[i].split(',');
-                    allData.push({ time, incident: parseInt(incident) });
+                    
+                    // Разбиваем строку по запятым
+                    const parts = lines[i].split(',');
+                    
+                    // Проверяем, что строка содержит достаточно данных
+                    if (parts.length < 3) continue;
+                    
+                    // Извлекаем время и incident (игнорируя первый элемент - индекс)
+                    const time = parts[1].trim();
+                    const incident = parseInt(parts[2].trim());
+                    
+                    allData.push({ time, incident });
                 }
-                }
+                
                 console.log(allData);
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
-            )
+            })
             .catch(error => {
                 console.error('Ошибка:', error);
                 alert('Произошла ошибка при обработке файла');
@@ -440,9 +449,20 @@
         function showDay(index) {
             currentDayIndex = index;
             const dayData = daysData[index];
-            const date = new Date(dayData[0].time).toLocaleDateString('ru-RU');
             
-            const xData = dayData.map(item => item.time.split(' ')[1].substring(0, 5));
+            // Проверяем, что есть данные для отображения
+            if (!dayData || dayData.length === 0) return;
+            
+            // Получаем дату из первого элемента
+            const dateStr = dayData[0].time.split(' ')[0];
+            const date = new Date(dateStr).toLocaleDateString('ru-RU');
+            
+            // Подготавливаем данные для графика
+            const xData = dayData.map(item => {
+                const timeParts = item.time.split(' ');
+                return timeParts.length > 1 ? timeParts[1].substring(0, 5) : '';
+            });
+            
             const yData = dayData.map(item => item.incident);
             
             renderChart(xData, yData, date);
