@@ -53,14 +53,15 @@ def parse(path):
 def delta_parse(parse_list):
     result = []
     for i in range(len(parse_list) - 1):
-        memory_dif = parse_list[i + 1][1] - parse_list[i + 1][1]
+        memory_dif = parse_list[i + 1][1] - parse_list[i][1]
         result.append([parse_list[i][0], memory_dif])
     return result
 
 def parse_csv_arr(arr):
     data = StringIO()
 
-    csv.writer(data).writerows(arr)
+    writer = csv.writer(data)
+    writer.writerows(arr)
 
     return data.getvalue()
 

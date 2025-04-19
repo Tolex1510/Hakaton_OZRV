@@ -17,13 +17,15 @@ AUTH_PASS = getenv("AUTH_PASS")
 @cross_origin()
 def startAnalys():
     try:
-        if request.headers["X-auth"] != AUTH_PASS:
+        if not request.headers["X-auth"]:
             abort(401)
     except:
         abort(401)
 
-    with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
-        f.write(request.data.decode())
+    request.files["file"].save(f"Uploads/{request.headers["filename"]}")
+
+    # with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
+    #     f.write(request.data.decode())
 
     return parser(request.headers)
 
@@ -34,7 +36,7 @@ def parser(headers):
 
     csv_arr_with_incidents = func_from_ai(csv_arr)
 
-    done_csv = parse_csv_arr(csv_arr_with_incidents)
+    done_csv = parse_csv_arr(csv_arr)
 
     response = return_csv_response(done_csv)
 
