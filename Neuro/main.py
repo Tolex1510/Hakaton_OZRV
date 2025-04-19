@@ -59,7 +59,7 @@ def main(file="Dataset/test_check_results.csv", model_path="Model 5000.pth", win
     
     # 5. Предсказание (передаем numpy массивы, а не DataFrame)
     result = prediction(model, X_train, X_test, y_test, task=True)
-    print(result)
+    # print(result)
     rstl = result.tolist()
     return [[time[i], rstl[i]] for i in range(len(rstl))]
 

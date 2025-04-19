@@ -25,18 +25,20 @@ def startAnalys():
     except:
         abort(401)
 
-    path = f"Backend/Uploads/{request.headers["filename"]}"
+
+    filename = request.headers["filename"].split(".")[0]
+    path = f"Backend/Uploads/{filename}_check_results.csv"
 
     request.files["file"].save(path)
 
     incidents = get_incidents(path) # [[time, incident]]
 
-    print(incidents)
+    # print(incidents)
 
     # for_debug(path)
 
     convert(path, incidents)
-    print("ALL GOOD")
+    # print("ALL GOOD")
 
     with open(path, 'r') as f:
         data = f.read()
@@ -51,6 +53,7 @@ def main_page():
 # convert arr like ['time', 'incident'] to csv file with same name in *path*
 def convert(path, incidents):
     # incidents = [[i] for i in incidents]
+    incidents.insert(0, ["time", "incident"])
     with open(path, 'w', newline='') as f:
         writer = csv.writer(f)
         for row in incidents:
@@ -64,7 +67,7 @@ def for_debug(path):
 
 # start listening
 def main():
-    app.run(host="0.0.0.0", port=6080, debug=True)
+    app.run(host="0.0.0.0", port=6080, debug=False)
 
 if __name__ == "__main__":
     main()
