@@ -425,8 +425,6 @@
                     
                     allData.push({ time, incident });
                 }
-                
-                console.log(allData);
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
             })
@@ -450,22 +448,32 @@
             currentDayIndex = index;
             const dayData = daysData[index];
             
-            // Проверяем, что есть данные для отображения
             if (!dayData || dayData.length === 0) return;
             
-            // Получаем дату из первого элемента
             const dateStr = dayData[0].time.split(' ')[0];
             const date = new Date(dateStr).toLocaleDateString('ru-RU');
             
-            // Подготавливаем данные для графика
-            const xData = dayData.map(item => {
-                const timeParts = item.time.split(' ');
-                return timeParts.length > 1 ? timeParts[1].substring(0, 5) : '';
+            // Создаем массив для 24 часов
+            const hourlyData = Array(24).fill(0);
+            
+            // Заполняем массив количеством инцидентов (1) за каждый час
+            dayData.forEach(item => {
+                const hour = parseInt(item.time.split(' ')[1].split(':')[0]);
+                if (item.incident === 1) {
+                    hourlyData[hour]++;
+                }
             });
             
-            const yData = dayData.map(item => item.incident);
+            // Подготавливаем данные для графика
+            const xData = Array.from({length: 24}, (_, i) => `${i.toString().padStart(2, '0')}:00`);
+            const yData = hourlyData;
             
-            renderChart(xData, yData, date);
+            // Формируем заголовок с общей статистикой
+            const totalErrors = yData.reduce((sum, count) => sum + count, 0);
+            const title = `${date} (Всего ошибок: ${totalErrors})`;
+            console.log(xData);
+            console.log(yData);
+            renderChart(xData, yData, title);
             
             // Обновление навигации
             prevDayBtn.disabled = index === 0;
@@ -477,23 +485,21 @@
             chartControls.style.display = 'flex';
             dayNavigation.style.display = 'flex';
         }
-
+        
         function renderChart(labels, data, title) {
             if (dataChart) dataChart.destroy();
             
             const ctx = document.getElementById('dataChart').getContext('2d');
             dataChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar', // Используем столбчатую диаграмму для лучшей визуализации
                 data: {
                     labels,
                     datasets: [{
-                        label: 'Ошибки',
+                        label: 'Количество ошибок',
                         data,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1.5,
-                        pointRadius: 3,
-                        tension: 0.1
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
                     }]
                 },
                 options: {
@@ -501,15 +507,24 @@
                     maintainAspectRatio: false,
                     scales: {
                         x: {
+                            title: {
+                                display: true,
+                                text: 'Часы'
+                            },
                             ticks: {
                                 maxRotation: 45,
-                                minRotation: 45,
-                                font: { size: 11 }
+                                minRotation: 45
                             }
                         },
                         y: {
                             beginAtZero: true,
-                            ticks: { stepSize: 1 }
+                            title: {
+                                display: true,
+                                text: 'Количество вероятных сбоев'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
                     },
                     plugins: {
@@ -529,6 +544,13 @@
                             display: true,
                             text: title,
                             font: { size: 16 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Ошибок: ${context.parsed.y}`;
+                                }
+                            }
                         }
                     }
                 },
