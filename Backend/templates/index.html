@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ данных</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px; /* Уже для ПК */
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        p.description {
+            color: #7f8c8d;
+            margin-bottom: 24px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background-color: #fafafa;
+        }
+
+        .upload-area:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 12px;
+            transition: transform 0.3s;
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-area p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .file-info {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Стили для кнопок */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f1f1f1, #e1e1e1);
+            color: #444;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e1e1e1, #d1d1d1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 204, 113, 0.3);
+        }
+
+        /* Эффект волны при нажатии */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .day-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            gap: 10px;
+        }
+
+        .current-day {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c3e50;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #95a5a6;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Мобильная верстка */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                max-width: 100%;
+                border-radius: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            .upload-area {
+                padding: 25px 20px;
+            }
+
+            .upload-icon {
+                font-size: 42px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .day-navigation {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Прогноз ошибок</h1>
+        <p class="description">Загрузите CSV файл для анализа статистики ошибок</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📁</div>
+            <p>Выбрать CSV файл</p>
+            <p>или перетащите сюда</p>
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+        
+        <button class="btn btn-primary" id="uploadBtn">Выбрать файл</button>
+        
+        <div class="chart-container" id="chartContainer" style="display: none;">
+            <canvas id="dataChart"></canvas>
+        </div>
+        
+        <div class="day-navigation" id="dayNavigation" style="display: none;">
+            <button class="btn btn-secondary" id="prevDayBtn">← Предыдущий</button>
+            <span class="current-day" id="currentDay">День 1</span>
+            <button class="btn btn-secondary" id="nextDayBtn">Следующий →</button>
+        </div>
+        
+        <div class="chart-controls" id="chartControls" style="display: none;">
+            <button class="btn btn-secondary" id="resetZoomBtn">Сбросить масштаб</button>
+            <button class="btn btn-success" id="exportBtn">Экспорт графика</button>
+        </div>
+    </div>
+    
+    <footer>
+        © Dreamweavers 2023
+    </footer>
+
+    <script>
+        // Элементы интерфейса
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.createElement('input');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const chartContainer = document.getElementById('chartContainer');
+        const chartControls = document.getElementById('chartControls');
+        const dayNavigation = document.getElementById('dayNavigation');
+        const prevDayBtn = document.getElementById('prevDayBtn');
+        const nextDayBtn = document.getElementById('nextDayBtn');
+        const currentDayEl = document.getElementById('currentDay');
+        const resetZoomBtn = document.getElementById('resetZoomBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        
+        // Переменные для данных и графика
+        let dataChart = null;
+        let allData = [];
+        let daysData = [];
+        let currentDayIndex = 0;
+
+        // Настройка файлового ввода
+        fileInput.type = 'file';
+        fileInput.multiple = false;
+        fileInput.accept = '.csv';
+        fileInput.style.display = 'none';
+
+        // Обработчики событий
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#3498db';
+            uploadArea.style.backgroundColor = '#f8f9fa';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#bdc3c7';
+            uploadArea.style.backgroundColor = '#fafafa';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#bdc3c7';
+            uploadArea.style.backgroundColor = '#fafafa';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+        
+        resetZoomBtn.addEventListener('click', () => dataChart?.resetZoom());
+        
+        exportBtn.addEventListener('click', () => {
+            if (dataChart) {
+                const link = document.createElement('a');
+                link.download = 'график-ошибок.png';
+                link.href = dataChart.toBase64Image();
+                link.click();
+            }
+        });
+        
+        prevDayBtn.addEventListener('click', () => {
+            if (currentDayIndex > 0) showDay(currentDayIndex - 1);
+        });
+        
+        nextDayBtn.addEventListener('click', () => {
+            if (currentDayIndex < daysData.length - 1) showDay(currentDayIndex + 1);
+        });
+
+        // Основные функции
+        function handleFiles(files) {
+            if (!files.length) return;
+            const file = files[0];
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                alert('Пожалуйста, выберите CSV файл');
+                return;
+            }
+            
+            fileInfo.style.display = 'block';
+            fileInfo.innerHTML = `
+                <strong>Файл:</strong> ${file.name}<br>
+                <strong>Размер:</strong> ${(file.size / 1024).toFixed(1)} KB
+            `;
+            
+            uploadBtn.textContent = 'Изменить файл';
+            processCSV(file);
+        }
+
+        function processCSV(file) {
+            // 1. Сначала отправляем файл на сервер
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('http://127.0.0.1:6080/startAnalys', {
+                method: 'POST',
+                headers: {
+                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
+                    'filename': file.name
+                },
+                body: formData
+            })
+            .then(response => {
+                // Проверяем, что ответ содержит CSV
+                if (!response.ok) throw new Error('Ошибка сервера');
+                return response.text(); // Получаем текст ответа (CSV содержимое)
+            })
+            .then(csvText => {
+                console.log(csvText);
+                const reader = new FileReader();
+                reader.onload = (csvText) => {
+                const lines = csvText.target.result.split('\n');
+                console.log(lines);
+                allData = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const [time, incident] = lines[i].split(',');
+                    allData.push({ time, incident: parseInt(incident) });
+                }
+                }
+                console.log(allData);
+                daysData = groupDataByDay(allData);
+                if (daysData.length) showDay(0);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обработке файла');
+            });
+        }
+
+        function groupDataByDay(data) {
+            const daysMap = new Map();
+            data.forEach(item => {
+                const date = item.time.split(' ')[0];
+                if (!daysMap.has(date)) daysMap.set(date, []);
+                daysMap.get(date).push(item);
+            });
+            return Array.from(daysMap.values());
+        }
+
+        function showDay(index) {
+            currentDayIndex = index;
+            const dayData = daysData[index];
+            const date = new Date(dayData[0].time).toLocaleDateString('ru-RU');
+            
+            const xData = dayData.map(item => item.time.split(' ')[1].substring(0, 5));
+            const yData = dayData.map(item => item.incident);
+            
+            renderChart(xData, yData, date);
+            
+            // Обновление навигации
+            prevDayBtn.disabled = index === 0;
+            nextDayBtn.disabled = index === daysData.length - 1;
+            currentDayEl.textContent = date;
+            
+            // Показываем элементы интерфейса
+            chartContainer.style.display = 'block';
+            chartControls.style.display = 'flex';
+            dayNavigation.style.display = 'flex';
+        }
+
+        function renderChart(labels, data, title) {
+            if (dataChart) dataChart.destroy();
+            
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            dataChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Ошибки',
+                        data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1.5,
+                        pointRadius: 3,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        zoom: {
+                            zoom: {
+                                wheel: { enabled: true },
+                                pinch: { enabled: true },
+                                mode: 'xy',
+                            },
+                            pan: {
+                                enabled: true,
+                                mode: 'xy',
+                                modifierKey: 'ctrl'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: title,
+                            font: { size: 16 }
+                        }
+                    }
+                },
+                plugins: [ChartZoom]
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # some imports
-from flask import Flask, request, abort, make_response
+from flask import Flask, request, abort, make_response, render_template
 from flask_cors import CORS, cross_origin
 from Modules.parser import parse, parse_csv_arr, return_csv_response
 from os import getenv
@@ -31,6 +31,11 @@ def startAnalys():
         data = f.read()
 
     return data
+
+@app.route("/")
+@cross_origin()
+def main_page():
+    return render_template("index.html")
 
 # Get csv file without incidents, with Neuro create incidents and return csv's response with incidents
 def parser(headers):
