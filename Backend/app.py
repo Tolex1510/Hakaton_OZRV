@@ -29,11 +29,11 @@ def startAnalys():
 
     request.files["file"].save(path)
 
-    # incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
+    incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
 
-    for_debug(path)
+    # for_debug(path)
 
-    # convert(path, incidents)
+    convert(path, incidents)
 
     with open(path, 'r') as f:
         data = f.read()
