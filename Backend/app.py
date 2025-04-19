@@ -2,6 +2,7 @@
 from flask import Flask, request, abort, make_response, render_template
 from flask_cors import CORS, cross_origin
 from Modules.parser import parse, parse_csv_arr, return_csv_response
+from Modules.converter import converter
 from os import getenv
 from dotenv import load_dotenv
 
@@ -23,6 +24,8 @@ def startAnalys():
         abort(401)
 
     request.files["file"].save(f"Uploads/{request.headers["filename"]}")
+
+    converter(f"Uploads/{request.headers["filename"]}")
 
     # with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
     #     f.write(request.data.decode())
