@@ -15,42 +15,41 @@ def parseManually(path: str) -> List[Event]:
     :param path: Path of csv file
     :return: List with Event objects of each row in csv file with attributes: 'time', 'incident' and 'node_memory_MemFree_bytes'
     """
-    data = pd.read_csv(path)[ATTRIBUTES]
-
-    result = []
-
-    for row in data.values:
-        time = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
-
-        attrs = dict()
-        for i, attr in enumerate(ATTRIBUTES):
-            attrs[attr] = row[i]
-
-        attrs["time"] = time
-        result.append(Event(
-            **attrs
-        ))
-    
-    return result
-
-def parse(path):
-    """
-    Parse csv file for second case and return matrix with 'time' and 'node_memory_MemFree_bytes
-    :param path: Path of csv file
-    :return: List with Event objects of each row in csv file with attributes: 'time' and 'node_memory_MemFree_bytes'
-    """
-    data = pd.read_csv(path)[["time", "node_memory_MemFree_bytes"]]
+    data = pd.read_csv(path)[["time", "incident", "node_memory_MemFree_bytes"]]
 
     result = []
 
     for row in data.values:
         # transfer string to datetime
-        elem = [datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S"), row[1]]
+        elem = [datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S"), row[1], row[2]]
         result.append(elem)
 
     return delta_parse(result)
 
+def parse(path, attrs=None):
+    """
+    Parse csv file for second case and return matrix with 'time' and 'node_memory_MemFree_bytes
+    :param path: Path of csv file
+    :param attrs: List with attributes that you need to parse. The necessary one is 'time', and it has to be at the zero index
+    :return: List with Event objects of each row in csv file with attributes: 'time' and 'node_memory_MemFree_bytes'
+    """
+    if not attrs:
+        attrs = ["time", "incident", "node_memory_MemFree_bytes"]
+
+    data = pd.read_csv(path)[attrs]
+
+    result = []
+
+    for row in data.values:
+        # transfer string to datetime for attribute 'time'
+        row[0] = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
+        result.append(row)
+
+    return delta_parse(result)
+
+
 def delta_parse(parse_list):
+    """Delta parse after all get memory_dif between next and current events in the parse_list"""
     result = []
     for i in range(len(parse_list) - 1):
         memory_dif = parse_list[i + 1][1] - parse_list[i][1]
@@ -70,5 +69,5 @@ def return_csv_response(body):
     cw = csv.writer(si)
     cw.writerows(body)
 
-    response = make_response(si.getvalue())
-    return response
+    # response = make_response(si.getvalue())
+    return si.getvalue()

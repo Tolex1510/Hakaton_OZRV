@@ -393,7 +393,7 @@
             const formData = new FormData();
             formData.append('file', file);
             
-            fetch('http://89.111.152.243:6080/startAnalys', { 
+            fetch('http://127.0.0.1:6080/startAnalys', {
                 method: 'POST',
                 headers: {
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
@@ -407,9 +407,11 @@
                 return response; // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
+                console.log(csvText);
                 const reader = new FileReader();
                 reader.onload = (csvText) => {
                 const lines = csvText.target.result.split('\n');
+                console.log(lines);
                 allData = [];
 
                 for (let i = 1; i < lines.length; i++) {
@@ -418,7 +420,7 @@
                     allData.push({ time, incident: parseInt(incident) });
                 }
                 }
-                
+                console.log(allData);
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
             })

@@ -17,7 +17,7 @@ AUTH_PASS = getenv("AUTH_PASS")
 @cross_origin()
 def startAnalys():
     try:
-        if not request.headers["X-auth"]:
+        if request.headers["X-auth"] != AUTH_PASS:
             abort(401)
     except:
         abort(401)
@@ -27,7 +27,7 @@ def startAnalys():
     # with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
     #     f.write(request.data.decode())
 
-    return parser(request.headers)
+    return request.files["file"]
 
 # Get csv file without incidents, with Neuro create incidents and return csv's response with incidents
 def parser(headers):
@@ -39,6 +39,8 @@ def parser(headers):
     done_csv = parse_csv_arr(csv_arr)
 
     response = return_csv_response(done_csv)
+
+    # response.headers["content-type"] = "text/csv"
 
     return response
 
