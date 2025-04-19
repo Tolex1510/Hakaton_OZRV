@@ -22,8 +22,6 @@ def find_most_dense_interval(bool_list, interval_size=300):
 
     return (best_start, best_end, max_true_count)
 
-
-
 def plot_for_file(file_path):
     events = parser.parseManually(file_path)
 
