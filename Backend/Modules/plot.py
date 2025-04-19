@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import parser
+import Backend.Modules.parser
 
 def find_most_dense_interval(bool_list, interval_size=300):
     list_len = len(bool_list)

@@ -1,5 +1,5 @@
 import pandas as pd
-from Modules.event import Event
+from Backend.Modules.event import Event
 from datetime import datetime
 
 def parse(path, attrs=None):

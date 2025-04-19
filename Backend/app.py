@@ -1,7 +1,7 @@
 # some imports
 from flask import Flask, request, abort, make_response, render_template
 from flask_cors import CORS, cross_origin
-from Modules.parser import parse
+from Backend.Modules.parser import parse
 from os import getenv
 from dotenv import load_dotenv
 from Neuro.main import main as get_incidents
@@ -25,15 +25,17 @@ def startAnalys():
     except:
         abort(401)
 
-    request.files["file"].save(f"Uploads/{request.headers["filename"]}")
+    path = f"Backend/Uploads/{request.headers["filename"]}"
+
+    request.files["file"].save(path)
 
     # incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
 
-    for_debug(f"Uploads/{request.headers["filename"]}")
+    for_debug(path)
 
-    # convert(f"Uploads/{request.headers["filename"]}", incidents)
+    # convert(path, incidents)
 
-    with open(f"Uploads/{request.headers["filename"]}", 'r') as f:
+    with open(path, 'r') as f:
         data = f.read()
 
     return data
