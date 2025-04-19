@@ -393,7 +393,7 @@
             const formData = new FormData();
             formData.append('file', file);
             
-            fetch('http://127.0.0.1:6080/startAnalys', { 
+            fetch('http://89.111.152.243:6080/startAnalys', { 
                 method: 'POST',
                 headers: {
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
@@ -404,18 +404,19 @@
             .then(response => {
                 // Проверяем, что ответ содержит CSV
                 if (!response.ok) throw new Error('Ошибка сервера');
-                return response.text(); // Получаем текст ответа (CSV содержимое)
+                return response; // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
-                // Обрабатываем CSV, полученный от сервера
-                const lines = csvText.split('\n');
-                console.log(csvText);
+                const reader = new FileReader();
+                reader.onload = (csvText) => {
+                const lines = csvText.target.result.split('\n');
                 allData = [];
-                
+
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
                     const [time, incident] = lines[i].split(',');
                     allData.push({ time, incident: parseInt(incident) });
+                }
                 }
                 
                 daysData = groupDataByDay(allData);
