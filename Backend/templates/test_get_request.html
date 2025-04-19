@@ -404,17 +404,29 @@
             .then(response => {
                 // Проверяем, что ответ содержит CSV
                 if (!response.ok) throw new Error('Ошибка сервера');
-                return response.text(); // Получаем текст ответа (CSV содержимое)
+                return response
+                // return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
                 // Обрабатываем CSV, полученный от сервера
-                const lines = csvText.split('\n');
+                // const lines = csvText.split('\n');
+                // allData = [];
+                
+                // for (let i = 1; i < lines.length; i++) {
+                //     if (!lines[i].trim()) continue;
+                //     const [time, incident] = lines[i].split(',');
+                //     allData.push({ time, incident: parseInt(incident) });
+                // }
+                const reader = new FileReader();
+                reader.onload = (csvText) => {
+                const lines = csvText.target.result.split('\n');
                 allData = [];
                 
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
                     const [time, incident] = lines[i].split(',');
                     allData.push({ time, incident: parseInt(incident) });
+                }
                 }
                 
                 daysData = groupDataByDay(allData);
