@@ -31,9 +31,12 @@ def startAnalys():
 
     incidents = get_incidents(path) # [[time, incident]]
 
+    print(incidents)
+
     # for_debug(path)
 
     convert(path, incidents)
+    print("ALL GOOD")
 
     with open(path, 'r') as f:
         data = f.read()
@@ -47,8 +50,11 @@ def main_page():
 
 # convert arr like ['time', 'incident'] to csv file with same name in *path*
 def convert(path, incidents):
-    with open(path, 'w', newline='') as f:
-        csv.writer(f).writerows(incidents)
+    incidents = [[i] for i in incidents]
+    with (open(path, 'w', newline='') as f):
+        writer = csv.writer(f)
+        for row in incidents:
+            writer.writerow(row)
 
 def for_debug(path):
     data = pd.read_csv(path)[["time", "incident"]]

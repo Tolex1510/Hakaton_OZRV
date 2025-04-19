@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 import torch
 from Neuro.prediction import prediction
 import pandas as pd
-from learning import AnomalyDetector
+from Neuro.learning import AnomalyDetector
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
@@ -43,7 +43,7 @@ def prepare_data(df, window_size):
 def main(file="Dataset/test.csv", model_path="Model 5000.pth", window_size=10):
     # 1. Загрузка данных
     events = pd.read_csv(file)
-    
+    time = pd.read_csv(file)["time"]
     # 2. Подготовка данных
     X, y, scaler = prepare_data(events, window_size)
     
@@ -60,7 +60,9 @@ def main(file="Dataset/test.csv", model_path="Model 5000.pth", window_size=10):
     # 5. Предсказание (передаем numpy массивы, а не DataFrame)
     result = prediction(model, X_train, X_test, y_test, task=True)
     print(result)
-    return result
+    rstl = result.tolist()
+    rstl.insert(0, ["time", "incident"])
+    return [[time[i], rstl[i]] for i in range(len(rstl))]
 
 if __name__ == "__main__":
     main()

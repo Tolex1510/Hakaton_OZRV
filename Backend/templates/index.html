@@ -393,7 +393,7 @@
             const formData = new FormData();
             formData.append('file', file);
             
-            fetch('http://89.111.152.243:6080/startAnalys', {
+            fetch('http://127.0.0.1:6080/startAnalys', {
                 method: 'POST',
                 headers: {
                     'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
@@ -407,8 +407,10 @@
                 return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
+                console.log("ok");
                 const lines = csvText.split('\n');
                 allData = [];
+                console.log(lines);
         
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
