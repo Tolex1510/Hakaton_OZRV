@@ -404,7 +404,7 @@
             .then(response => {
                 // Проверяем, что ответ содержит CSV
                 if (!response.ok) throw new Error('Ошибка сервера');
-                return response; // Получаем текст ответа (CSV содержимое)
+                return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
                 console.log(csvText);
