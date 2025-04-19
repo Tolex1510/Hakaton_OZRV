@@ -21,13 +21,18 @@ def parse(path, attrs=None):
         row[0] = datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
         result.append(row)
 
-    return delta_parse(result)
+    return result
 
 
-def delta_parse(parse_list):
+def delta_parse(parse_list, attrs):
     """Delta parse after all get memory_dif between next and current events in the parse_list"""
     result = []
     for i in range(len(parse_list) - 1):
-        memory_dif = parse_list[i + 1][1] - parse_list[i][1]
-        result.append([parse_list[i][0], memory_dif])
+        event = [parse_list[i][0]]
+        for j, attr in enumerate(attrs):
+            if attr in ("time", "incident"):
+                event.append(parse_list[i][j])
+            else:
+                event.append(parse_list[i + 1][j] - parse_list[i][j])
+        result.append(event)
     return result
