@@ -27,7 +27,10 @@ def startAnalys():
     # with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
     #     f.write(request.data.decode())
 
-    return request.files["file"]
+    with open(f"Uploads/{request.headers["filename"]}", 'r') as f:
+        data = f.read()
+
+    return data
 
 # Get csv file without incidents, with Neuro create incidents and return csv's response with incidents
 def parser(headers):
