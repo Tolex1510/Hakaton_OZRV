@@ -292,6 +292,7 @@
         <div class="chart-controls" id="chartControls" style="display: none;">
             <button class="btn btn-secondary" id="resetZoomBtn">Сбросить масштаб</button>
             <button class="btn btn-success" id="exportBtn">Экспорт графика</button>
+            <button class="btn btn-success" id="saveBtnCsv">Сохранить CSV</button>
         </div>
     </div>
     
@@ -313,12 +314,36 @@
         const currentDayEl = document.getElementById('currentDay');
         const resetZoomBtn = document.getElementById('resetZoomBtn');
         const exportBtn = document.getElementById('exportBtn');
+        const saveBtnCsv = document.getElementById('saveBtnCsv');
+
+        
+        downloadCsv('export.csv', [['Заголовок1', 'Заголовок2'], ['Ячейка1Ряд1', 'Ячейка2Ряд1']]);
         
         // Переменные для данных и графика
         let dataChart = null;
         let allData = [];
         let daysData = [];
         let currentDayIndex = 0;
+        let arrayData = [];
+
+        const downloadCsv = (filename = "result.csv", array) => {
+            const csvContent = array.map(row => 
+                row.map(field => 
+                    `"${field.toString().replace(/"/g, '""')}"`
+                ).join(",")
+            ).join("\n");
+        
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+        
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
 
         // Настройка файлового ввода
         fileInput.type = 'file';
@@ -407,7 +432,7 @@
                 return response.text(); // Получаем текст ответа (CSV содержимое)
             })
             .then(csvText => {
-                console.log("ok");
+                arrayData = csvText;
                 const lines = csvText.split('\n');
                 allData = [];
                 console.log(lines);
