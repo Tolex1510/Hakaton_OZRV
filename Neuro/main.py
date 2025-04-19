@@ -40,7 +40,7 @@ def prepare_data(df, window_size):
     
     return X, y, scaler
 
-def main(file="Dataset/train.csv", model_path="Model.pth", window_size=10):
+def main(file="Dataset/train.csv", model_path="Model 5000.pth", window_size=10):
     # 1. Загрузка данных
     events = pd.read_csv(file)
     
