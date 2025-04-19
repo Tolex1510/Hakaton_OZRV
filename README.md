@@ -25,10 +25,12 @@
 ## Запуск проекта
 
 1.  Клонируйте репозиторий: `git clone https://github.com/Tolex1510/Hakaton_OZRV.git`
-2.  Перейдите в директорию бэкенда: `cd backend`
+2.  Перейдите в директорию бэкенда: `cd Hakaton_OZRV`
 3.  Создайте виртуальное окружение: `python -m venv venv`
 4.  Активируйте виртуальное окружение:
     *   Linux/macOS: `source venv/bin/activate`
     *   Windows: `venv\Scripts\activate`
-5.  Установите зависимости: `pip install -r requirements.txt`
-6.  Запустите сервер: `python app.py`
+5. Перейдите в папку Backend: `cd Backend`
+6. Установите зависимости: `pip install -r requirements.txt`
+7. Вернить в прошлую директорию: `cd ..`
+8. Запустите сервер: `python main.py`
