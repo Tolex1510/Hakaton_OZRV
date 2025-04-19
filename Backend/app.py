@@ -50,11 +50,12 @@ def main_page():
 
 # convert arr like ['time', 'incident'] to csv file with same name in *path*
 def convert(path, incidents):
-    incidents = [[i] for i in incidents]
-    with (open(path, 'w', newline='') as f):
+    # incidents = [[i] for i in incidents]
+    with open(path, 'w', newline='') as f:
         writer = csv.writer(f)
         for row in incidents:
             writer.writerow(row)
+
 
 def for_debug(path):
     data = pd.read_csv(path)[["time", "incident"]]
