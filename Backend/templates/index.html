@@ -471,8 +471,6 @@
             // Формируем заголовок с общей статистикой
             const totalErrors = yData.reduce((sum, count) => sum + count, 0);
             const title = `${date} (Всего ошибок: ${totalErrors})`;
-            console.log(xData);
-            console.log(yData);
             renderChart(xData, yData, title);
             
             // Обновление навигации
