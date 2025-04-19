@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 import torch
 from Neuro.prediction import prediction
 import pandas as pd
-from Neuro.learning import AnomalyDetector
+from learning import AnomalyDetector
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
@@ -40,7 +40,7 @@ def prepare_data(df, window_size):
     
     return X, y, scaler
 
-def main(file="Dataset/train.csv", model_path="Model 5000.pth", window_size=10):
+def main(file="Dataset/test.csv", model_path="Model 5000.pth", window_size=10):
     # 1. Загрузка данных
     events = pd.read_csv(file)
     
@@ -49,7 +49,7 @@ def main(file="Dataset/train.csv", model_path="Model 5000.pth", window_size=10):
     
     # 3. Загрузка модели
     checkpoint = torch.load(model_path, map_location='cpu', weights_only=False)
-    model = AnomalyDetector(input_dim=checkpoint['input_dim'])
+    model = AnomalyDetector()
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
     
