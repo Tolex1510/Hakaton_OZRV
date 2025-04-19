@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 import torch
-from prediction import prediction
+from Neuro.prediction import prediction
 from Backend.Modules.parser import parse
 
 def main(path):

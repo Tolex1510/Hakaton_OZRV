@@ -1,10 +1,11 @@
 # some imports
 from flask import Flask, request, abort, make_response, render_template
 from flask_cors import CORS, cross_origin
-from Modules.parser import parse, parse_csv_arr, return_csv_response
+from Modules.parser import parse
 from os import getenv
 from dotenv import load_dotenv
 from Neuro.main import main as get_incidents
+import pandas as pd
 import csv
 
 app = Flask(__name__)
@@ -26,9 +27,11 @@ def startAnalys():
 
     request.files["file"].save(f"Uploads/{request.headers["filename"]}")
 
-    incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
+    # incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
 
-    convert(f"Uploads/{request.headers["filename"]}", incidents)
+    for_debug(f"Uploads/{request.headers["filename"]}")
+
+    # convert(f"Uploads/{request.headers["filename"]}", incidents)
 
     with open(f"Uploads/{request.headers["filename"]}", 'r') as f:
         data = f.read()
@@ -44,6 +47,11 @@ def main_page():
 def convert(path, incidents):
     with open(path, 'w', newline='') as f:
         csv.writer(f).writerows(incidents)
+
+def for_debug(path):
+    data = pd.read_csv(path)[["time", "incident"]]
+
+    data.to_csv(path)
 
 # start listening
 def main():
