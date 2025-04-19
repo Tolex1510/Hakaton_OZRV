@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 import numpy as np
 
-class RobustAnomalyDetector(nn.Module):
+class AnomalyDetector(nn.Module):
     def __init__(self, input_dim=10, hidden_dim=8, latent_dim=4):
         super().__init__()
         self.encoder = nn.Sequential(
