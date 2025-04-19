@@ -61,7 +61,6 @@ def main(file="Dataset/test.csv", model_path="Model 5000.pth", window_size=10):
     result = prediction(model, X_train, X_test, y_test, task=True)
     print(result)
     rstl = result.tolist()
-    rstl.insert(0, ["time", "incident"])
     return [[time[i], rstl[i]] for i in range(len(rstl))]
 
 if __name__ == "__main__":
