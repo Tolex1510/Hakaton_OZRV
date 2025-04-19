@@ -412,14 +412,14 @@
                 allData = [];
                 console.log(lines);
         
-                for (let i = 0; i < lines.length; i++) {
+                for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
                     
                     // Разбиваем строку по запятым
                     const parts = lines[i].split(',');
-                    
-                    // Проверяем, что строка содержит достаточно данных
-                    if (parts.length < 3) continue;
+
+                    console.log(parts);
+
                     
                     // Извлекаем время и incident (игнорируя первый элемент - индекс)
                     const time = parts[0].trim();
@@ -429,6 +429,7 @@
                 }
                 daysData = groupDataByDay(allData);
                 if (daysData.length) showDay(0);
+                console.log(allData);
             })
             .catch(error => {
                 console.error('Ошибка:', error);
