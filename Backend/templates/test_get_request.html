@@ -389,46 +389,61 @@
         }
 
         function processCSV(file) {
-            // 1. Сначала отправляем файл на сервер
-            const formData = new FormData();
-            formData.append('file', file);
+    // Показываем индикатор загрузки
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Обработка...';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('http://127.0.0.1:6080/startAnalys', {
+        method: 'POST',
+        headers: {
+            'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
+            'filename': file.name
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Ошибка сервера: ' + response.status);
+        return response.text();
+    })
+    .then(csvText => {
+        // Парсим CSV данные
+        const lines = csvText.trim().split('\n');
+        allData = [];
+        
+        // Обрабатываем каждую строку, начиная со второй (пропускаем заголовок)
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
             
-            fetch('http://127.0.0.1:6080/startAnalys', {
-                method: 'POST',
-                headers: {
-                    'X-auth': 'bogdan_krasnov_luchshe_vseh_kak_parol',
-                    'filename': file.name
-                },
-                body: formData
-            })
-            .then(response => {
-                // Проверяем, что ответ содержит CSV
-                if (!response.ok) throw new Error('Ошибка сервера');
-                return response.text(); // Получаем текст ответа (CSV содержимое)
-            })
-            .then(csvText => {
-                console.log(csvText);
-                const reader = new FileReader();
-                reader.onload = (csvText) => {
-                const lines = csvText.target.result.split('\n');
-                console.log(lines);
-                allData = [];
-
-                for (let i = 1; i < lines.length; i++) {
-                    if (!lines[i].trim()) continue;
-                    const [time, incident] = lines[i].split(',');
-                    allData.push({ time, incident: parseInt(incident) });
-                }
-                }
-                console.log(allData);
-                daysData = groupDataByDay(allData);
-                if (daysData.length) showDay(0);
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка при обработке файла');
+            const [time, incident] = line.split(',');
+            allData.push({
+                time: time.trim(),
+                incident: parseInt(incident) || 0
             });
         }
+        
+        if (allData.length === 0) {
+            throw new Error('CSV файл не содержит данных');
+        }
+        
+        // Группируем данные по дням
+        daysData = groupDataByDay(allData);
+        if (daysData.length) {
+            showDay(0); // Показываем первый день по умолчанию
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Ошибка обработки файла: ' + error.message);
+    })
+    .finally(() => {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Изменить файл';
+    });
+}
 
         function groupDataByDay(data) {
             const daysMap = new Map();
