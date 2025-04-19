@@ -1,8 +1,8 @@
 from sklearn.model_selection import train_test_split
 import torch
-from prediction import prediction
+from Neuro.prediction import prediction
 import pandas as pd
-from neuro import AnomalyDetector
+from Neuro.learning import AnomalyDetector
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 

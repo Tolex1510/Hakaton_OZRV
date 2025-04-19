@@ -29,7 +29,7 @@ def startAnalys():
 
     request.files["file"].save(path)
 
-    incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
+    incidents = get_incidents(path) # [[time, incident]]
 
     # for_debug(path)
 
