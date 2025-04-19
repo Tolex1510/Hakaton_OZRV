@@ -2,9 +2,10 @@
 from flask import Flask, request, abort, make_response, render_template
 from flask_cors import CORS, cross_origin
 from Modules.parser import parse, parse_csv_arr, return_csv_response
-from Modules.converter import converter
 from os import getenv
 from dotenv import load_dotenv
+from Neuro.main import main as get_incidents
+import csv
 
 app = Flask(__name__)
 CORS(app)
@@ -25,10 +26,9 @@ def startAnalys():
 
     request.files["file"].save(f"Uploads/{request.headers["filename"]}")
 
-    converter(f"Uploads/{request.headers["filename"]}")
+    incidents = get_incidents(f"Uploads/{request.headers["filename"]}") # [[time, incident]]
 
-    # with open(f"Uploads/{request.headers["filename"]}", 'w') as f:
-    #     f.write(request.data.decode())
+    convert(f"Uploads/{request.headers["filename"]}", incidents)
 
     with open(f"Uploads/{request.headers["filename"]}", 'r') as f:
         data = f.read()
@@ -40,23 +40,10 @@ def startAnalys():
 def main_page():
     return render_template("index.html")
 
-# Get csv file without incidents, with Neuro create incidents and return csv's response with incidents
-def parser(headers):
-    """Get csv file without incidents, with Neuro create incidents and return csv's response with incidents"""
-    csv_arr = parse(f"Uploads/{headers["filename"]}")
-
-    csv_arr_with_incidents = func_from_ai(csv_arr)
-
-    done_csv = parse_csv_arr(csv_arr)
-
-    response = return_csv_response(done_csv)
-
-    # response.headers["content-type"] = "text/csv"
-
-    return response
-
-def func_from_ai(data):
-    pass
+# convert arr like ['time', 'incident'] to csv file with same name in *path*
+def convert(path, incidents):
+    with open(path, 'w', newline='') as f:
+        csv.writer(f).writerows(incidents)
 
 # start listening
 def main():
