@@ -413,6 +413,7 @@
     .then(csvText => {
         // Парсим CSV данные
         const lines = csvText.trim().split('\n');
+        console.log(`Lines: ${lines}`);
         allData = [];
         
         // Пропускаем заголовок (первую строку) и обрабатываем остальные
@@ -426,6 +427,7 @@
                 incident: parseInt(incident) || 0
             });
         }
+        console.log(allData);
         
         if (allData.length === 0) {
             throw new Error('CSV файл не содержит данных');
